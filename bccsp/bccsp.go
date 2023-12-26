@@ -50,6 +50,7 @@ type KeyGenOpts interface {
 	// Algorithm returns the key generation algorithm identifier (to be used).
 	Algorithm() string
 
+	// 需要指定生成秘钥的算法和是否短期秘钥，如果是长期秘钥的话，则需要通过SKI完成存储和索引
 	// Ephemeral returns true if the key to generate has to be ephemeral,
 	// false otherwise.
 	Ephemeral() bool
@@ -95,6 +96,20 @@ type EncrypterOpts interface{}
 // DecrypterOpts contains options for decrypting with a CSP.
 type DecrypterOpts interface{}
 
+// 秘钥生命周期管理:
+// 1. GenKey -- 产生秘钥
+// 2. DeriveKey -- 派生秘钥
+// 3. GetKey -- 获取秘钥
+// 4. ImportKey -- 导入秘钥
+
+// 签名验签操作
+// 1. Sign - 签名
+// 2. Verify - 验签
+
+// 加解密操作
+// 1. Encrypt - 加密操作
+// 2. Decrypt - 解密操作
+
 // BCCSP is the blockchain cryptographic service provider that offers
 // the implementation of cryptographic standards and algorithms.
 type BCCSP interface {
@@ -114,6 +129,7 @@ type BCCSP interface {
 	// the Subject Key Identifier ski.
 	GetKey(ski []byte) (k Key, err error)
 
+	// 提供Hash摘要能力
 	// Hash hashes messages msg using options opts.
 	// If opts is nil, the default hash function will be used.
 	Hash(msg []byte, opts HashOpts) (hash []byte, err error)
@@ -121,6 +137,8 @@ type BCCSP interface {
 	// GetHash returns and instance of hash.Hash using options opts.
 	// If opts is nil, the default hash function will be returned.
 	GetHash(opts HashOpts) (h hash.Hash, err error)
+
+	// BCCSP 通过Sign, Verify提供签名验签
 
 	// Sign signs digest using key k.
 	// The opts argument should be appropriate for the algorithm used.
@@ -134,6 +152,7 @@ type BCCSP interface {
 	// The opts argument should be appropriate for the algorithm used.
 	Verify(k Key, signature, digest []byte, opts SignerOpts) (valid bool, err error)
 
+	// 加解密能力
 	// Encrypt encrypts plaintext using key k.
 	// The opts argument should be appropriate for the algorithm used.
 	Encrypt(k Key, plaintext []byte, opts EncrypterOpts) (ciphertext []byte, err error)

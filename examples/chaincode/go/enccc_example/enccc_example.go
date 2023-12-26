@@ -16,12 +16,13 @@ import (
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
-const DECKEY = "DECKEY"
-const VERKEY = "VERKEY"
-const ENCKEY = "ENCKEY"
-const SIGKEY = "SIGKEY"
-const IV = "IV"
+const ENCKEY = "ENCKEY" // 加密操作
+const DECKEY = "DECKEY" // 解密操作
+const SIGKEY = "SIGKEY" // 签名操作
+const VERKEY = "VERKEY" // 验签操作
+const IV = "IV"         // 初始化向量
 
+// 加密/签名
 // EncCC example simple Chaincode implementation of a chaincode that uses encryption/signatures
 type EncCC struct {
 	bccspInst bccsp.BCCSP
